@@ -39,6 +39,7 @@ jobs:
           - 'm60_keyboard'
           - 'mdk_nrf52840_dongle'
           - 'nice_nano'
+          - 'numble'
           - 'nrf52840_m2'
           - 'ohs2020_badge'
           - 'particle_argon'
@@ -58,12 +59,12 @@ jobs:
 
     - name: Setup Node.js
       uses: actions/setup-node@v1
-      
+
     - name: Checkout Code
       uses: actions/checkout@v1
       with:
-        submodules: true      
-        
+        submodules: true
+
     - name: Install Toolchains
       run: |
         pip3 install adafruit-nrfutil uritemplate requests intelhex
@@ -72,12 +73,12 @@ jobs:
         # Skip this version for now, we will try again with next official release from ARM
         xpm install --global @xpack-dev-tools/arm-none-eabi-gcc@9.3.1-1.1.1
         echo `echo $HOME/.local/xPacks/@xpack-dev-tools/arm-none-eabi-gcc/*/.content/bin` >> $GITHUB_PATH
-    
+
     - name: Build
       run: |
         make BOARD=${{ matrix.board }} all
         make BOARD=${{ matrix.board }} copy-artifact
-      
+
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.board }}
@@ -97,7 +98,7 @@ jobs:
         asset_path: ${{ matrix.board }}_bootloader-${{ github.event.release.tag_name }}.zip
         asset_name: ${{ matrix.board }}_bootloader-${{ github.event.release.tag_name }}.zip
         asset_content_type: application/zip
-      
+
     - name: Upload Release Asset for Self-Update
       uses: actions/upload-release-asset@v1
       env:
